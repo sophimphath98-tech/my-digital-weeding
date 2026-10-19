@@ -37,20 +37,30 @@ npm run dev
 
 ## Deploy (Supabase Cloud + Vercel)
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. In **SQL Editor**, run `supabase/migrations/0001_init.sql` and `0002_hardening.sql` (in that order), then `supabase/seed.sql` for the default content. Delete the `demo2026` guest afterwards. You can also run `supabase link && supabase db push`.
-3. Push this repo to GitHub and import it into [Vercel](https://vercel.com).
-4. Set these environment variables in Vercel:
+1. Create a project at [supabase.com](https://supabase.com) (pick the **Singapore** region to match Vercel's `sin1`).
+2. In **SQL Editor**, paste and run `supabase/setup.sql` (all migrations in order), then `supabase/seed.sql` for the default content. Delete the `demo2026` guest afterwards.
+   Or with the CLI: `supabase link --project-ref <ref> && supabase db push`.
+3. Push this repo to GitHub and import it into [Vercel](https://vercel.com) (framework: Next.js, no build settings to change).
+4. In Vercel → Settings → Environment Variables, add (for Production *and* Preview):
 
    | Name | Value |
    |---|---|
-   | `NEXT_PUBLIC_SUPABASE_URL` | Project URL (Settings → API) |
-   | `SUPABASE_SERVICE_ROLE_KEY` | `service_role` key (keep secret) |
+   | `NEXT_PUBLIC_SUPABASE_URL` | Project URL, e.g. `https://abcd1234.supabase.co` (Project Settings → Data API) |
+   | `SUPABASE_SERVICE_ROLE_KEY` | the `service_role` key, or a new-style **secret** key `sb_secret_…` (Project Settings → API Keys). Keep it secret. |
    | `ADMIN_PASSWORD` | your admin password (use a long one) |
-   | `SESSION_SECRET` | `openssl rand -base64 32` |
-   | `NEXT_PUBLIC_SITE_URL` | e.g. `https://your-wedding.vercel.app` (used for guest links) |
+   | `SESSION_SECRET` | 32+ random characters: `openssl rand -base64 32` |
+   | `NEXT_PUBLIC_SITE_URL` | your final domain, e.g. `https://your-wedding.vercel.app` (used for guest links and share previews; optional, falls back to the Vercel URL) |
 
-5. Deploy, open `/admin`, customize the invitation, and add guests.
+5. **Redeploy** after adding or changing variables (Deployments → ⋯ → Redeploy); `NEXT_PUBLIC_*` values are baked in at build time.
+6. Open `/admin`, customize the invitation, and add guests.
+
+### Troubleshooting
+
+- **"Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"** → env vars not set for that environment, or you didn't redeploy.
+- **"permission denied for table …"** → run `supabase/migrations/0003_grants.sql` (included in `setup.sql`).
+- **"relation … does not exist" / "Could not find the function"** → the SQL wasn't run on this project.
+- **Login says "Server misconfigured (SESSION_SECRET)"** → `SESSION_SECRET` is missing or shorter than 16 characters.
+- **Uploads fail** → check the `media` bucket exists in Storage (created by the migration) and the file is under 15 MB.
 
 ## Security notes
 
@@ -73,6 +83,3 @@ src/components/admin/      admin UI
 src/lib/                   supabase client, auth/session, types (zod), data loaders
 supabase/                  migration + seed
 ```
-# my-digital-weeding
-# my-digital-weeding
-# my-digital-weeding

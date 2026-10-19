@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Kantumruy Pro", system-ui, sans-serif;
+}
+
+/* ---------- invitation theme (variables set inline from event config) ---------- */
+.invite {
+  --primary: #f9af59;
+  --text: #b08e4f;
+  --guest: #364153;
+  --radius: 8px;
+  --font-title: "Moul";
+  --font-body: "Battambang";
+  --font-script: "Great Vibes";
+  color: var(--text);
+  font-family: var(--font-body), "Kantumruy Pro", serif;
+}
+.invite .font-title { font-family: var(--font-title), serif; }
+.invite .font-heading { font-family: var(--font-heading), serif; letter-spacing: 0.02em; }
+.invite .font-script { font-family: var(--font-script), cursive; }
+.invite .btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius);
+}
+.invite .card {
+  background: rgb(255 255 255 / 0.85);
+  backdrop-filter: blur(6px);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+}
+.invite .divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+@keyframes float-up {
+  from { transform: translateY(0); opacity: 0.9; }
+  to { transform: translateY(-110vh); opacity: 0; }
+}
+.petal { animation: float-up linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .petal { animation: none; display: none; }
+}
